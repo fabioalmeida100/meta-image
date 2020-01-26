@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+    <h1>Primeira Aplicação</h1>
+    <form>
+        <div>
+            <input type="file" accept="image/*"/>            
+        </div>
+        <button type="submit">Mostrar dimensões</button>
+    </form>
+    <h1 id="result"></h1>    
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        
+        document.querySelector('form').addEventListener('submit', (event) => {
+           event.preventDefault();
+           const {path} = document.querySelector('input').files[0];
+           ipcRenderer.send('obterDimensoesDaImagem', path);
+                
+        });
+
+        ipcRenderer.on('dimensoesDaImagem', (event, dimensions) => {
+           document.querySelector('#result').innerHTML = 
+            `Largura=${dimensions.width} Altura=${dimensions.height}`;      
+        });
+    </script>
+
+</body>
+</html>
