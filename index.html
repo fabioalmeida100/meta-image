@@ -1,15 +1,32 @@
+<!DOCTYPE html>
 <html>
 <head>
+    <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css"> 
 </head>
 <body>
-    <h1>Primeira Aplicação</h1>
-    <form>
-        <div>
-            <input type="file" accept="image/*"/>            
-        </div>
-        <button type="submit">Mostrar dimensões</button>
-    </form>
-    <h1 id="result"></h1>    
+    <div class="container">
+        <h2 class="text-center">MetaFile Image</h2>     
+        <br />
+        <br />
+        <div class="row">
+        <form>            
+            <div class="col-sm-6">
+                <input type="file" accept="image/*"/>            
+            </div>
+            <br />
+            <br />
+            <div class="mx-auto" style="width: 190px;">
+                <button type="submit" class="btn btn-primary">Mostrar Informações</button>
+            </div>
+        </form>
+        </div>  
+        <br />
+        <br />
+        <p id="dimensoes"></p>
+        <p id="metadaDados"></p>
+    </div>
+        
     <script>
         const electron = require('electron');
         const {ipcRenderer} = electron;
@@ -18,12 +35,18 @@
            event.preventDefault();
            const {path} = document.querySelector('input').files[0];
            ipcRenderer.send('obterDimensoesDaImagem', path);
-                
+           ipcRenderer.send('obterMetaDadosImage', path);     
         });
 
         ipcRenderer.on('dimensoesDaImagem', (event, dimensions) => {
-           document.querySelector('#result').innerHTML = 
-            `Largura=${dimensions.width} Altura=${dimensions.height}`;      
+           document.querySelector('#dimensoes').innerHTML = 
+            `Largura=${dimensions.width} / Altura=${dimensions.height}`;      
+        });
+
+        ipcRenderer.on('metaDadosImage', (event, metaDados) => {
+           const { exif } = metaDados;
+           document.querySelector('#metadaDados').innerHTML = 
+            `Data criação=${exif.CreateDate}`;      
         });
     </script>
 
