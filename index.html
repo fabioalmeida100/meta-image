@@ -6,13 +6,13 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">MetaFile Image</h2>     
+        <h2 class="text-center">MetaImage Jpeg</h2>     
         <br />
         <br />
         <div class="row">
         <form>            
             <div class="col-sm-6">
-                <input type="file" accept="image/*"/>            
+                <input type="file" accept="image/jpeg"/>            
             </div>
             <br />
             <br />
@@ -23,8 +23,14 @@
         </div>  
         <br />
         <br />
-        <p id="dimensoes"></p>
-        <p id="metadaDados"></p>
+        <div class="container bg-dark text-white rounded">
+            <h5 id="titulo" class="text-center"></h1>
+            <p id="camera"></p>
+            <p id="modelo"></p>
+            <p id="altura"></p>
+            <p id="largura"></p>
+            <p id="fotoTiradaEm"></p>
+        </div>
     </div>
         
     <script>
@@ -34,19 +40,30 @@
         document.querySelector('form').addEventListener('submit', (event) => {
            event.preventDefault();
            const {path} = document.querySelector('input').files[0];
-           ipcRenderer.send('obterDimensoesDaImagem', path);
-           ipcRenderer.send('obterMetaDadosImage', path);     
-        });
 
-        ipcRenderer.on('dimensoesDaImagem', (event, dimensions) => {
-           document.querySelector('#dimensoes').innerHTML = 
-            `Largura=${dimensions.width} / Altura=${dimensions.height}`;      
+           ipcRenderer.send('obterMetaDados', path);     
         });
 
         ipcRenderer.on('metaDadosImage', (event, metaDados) => {
-           const { exif } = metaDados;
-           document.querySelector('#metadaDados').innerHTML = 
-            `Data criação=${exif.CreateDate}`;      
+           const { exif, image } = metaDados;
+           
+           document.querySelector('#titulo').innerHTML = 
+            `Informações da foto`;
+
+           document.querySelector('#camera').innerHTML = 
+            `<strong>Câmera</strong>: ${image.Make}`;
+
+            document.querySelector('#modelo').innerHTML = 
+            `<strong>Modelo</strong>: ${image.Model}`;
+
+           document.querySelector('#altura').innerHTML = 
+            `<strong>Altura</strong>: ${exif.ExifImageHeight} px`;
+
+           document.querySelector('#largura').innerHTML = 
+            `<strong>Largura</strong>: ${exif.ExifImageWidth} px`;             
+           
+            document.querySelector('#fotoTiradaEm').innerHTML = 
+            `<strong>Foto tirada em</strong>: ${exif.DateTimeOriginal}`;
         });
     </script>
 

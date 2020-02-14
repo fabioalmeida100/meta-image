@@ -12,6 +12,10 @@
     "bootstrap": "^4.4.1",
     "electron": "^7.1.10",
     "exif": "^0.6.0",
+    "exif-parser": "^0.1.12",
+    "exif-reader": "^1.0.3",
+    "file-metadata": "^1.0.0",
+    "file-to-array-buffer": "^1.0.0",
     "image-size": "^0.8.3",
     "jquery": "^3.4.1"
   }
